@@ -14,14 +14,15 @@ spring:
     username: root
     password: cos1234
 
-  mvc:
-    view:
-      prefix: /templates/
-      suffix: .mustache
+# mustache 를 사용하겠다고 의존성 등록을 하면 아래의 경로가 자동 등록됨
+#  mvc:
+#    view:
+#      prefix: /templates/
+#      suffix: .mustache
 
   jpa:
     hibernate:
-      ddl-auto: update #create update none
+      ddl-auto: create #create update none
       naming:
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
     show-sql: true
