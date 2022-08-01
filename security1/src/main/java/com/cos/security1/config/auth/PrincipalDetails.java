@@ -9,20 +9,32 @@ package com.cos.security1.config.auth;
 // security 가 가지고 있는 Security Session => Authentication => UserDetails
 
 import com.cos.security1.model.User;
+import lombok.Data;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Map;
 
-public class PrincipalDetails implements UserDetails {
+public class PrincipalDetails implements UserDetails, OAuth2User {
 
     private User user; // composition
+    private Map<String, Object> attributes;
+    @Override
+    public Map<String, Object> getAttributes() {
+        return null;
+    }
 
     public PrincipalDetails(User user){
         this.user = user;
     }
-
+    public PrincipalDetails(User user, Map<String, Object> attributes){
+        this.user = user;
+        this.attributes = attributes;
+    }
     // 해당 user 의 권한을 리턴하는 곳
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -65,5 +77,10 @@ public class PrincipalDetails implements UserDetails {
     public boolean isEnabled() {
 //        user.getLoginDate(); 으로 휴면계정 판단 가능
         return true;
+    }
+
+    @Override
+    public String getName() {
+        return null;
     }
 }
