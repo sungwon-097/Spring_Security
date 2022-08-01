@@ -26,7 +26,9 @@ public class SecurityConfig { // WebSecurityConfigureAdapter 가 Deprecated. @Be
                 .anyRequest().permitAll()
                 .and()
                 .formLogin()
-                .loginPage("/loginForm");
+                .loginPage("/loginForm")
+                .loginProcessingUrl("/login") // /login 이라는 주소가 호출되면 security 가 낚아채서 대신 로그인을 진행해줌 -> controller 에 /login 을 만들지 않아도
+                .defaultSuccessUrl("/"); // 특정페이지를 요청한 후에 로그인을 했다면 그 페이지로 보낸다
         return http.build();
     }
 }
