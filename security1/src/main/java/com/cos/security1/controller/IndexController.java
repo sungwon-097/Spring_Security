@@ -3,6 +3,8 @@ package com.cos.security1.controller;
 import com.cos.security1.model.User;
 import com.cos.security1.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -65,8 +67,10 @@ public class IndexController {
         return "redirect:/loginForm"; // redirect 를 하면 loginForm method 를 호출함
     }
 
-//    @GetMapping("/joinProc")
-//    public @ResponseBody String joinProc(){
-//        return "회원가입 완료됨";
-//    }
+//    @Secured("ROLE_ADMIN") // 단일 권한
+    @PreAuthorize("hasRole('ROLE_MANAGER') or hasRole('ROLE_ADMIN')") // 두 개 이상의 권한
+    @GetMapping("/info")
+    public @ResponseBody String info(){
+        return "private information";
+    }
 }
