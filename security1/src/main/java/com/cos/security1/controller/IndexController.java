@@ -28,6 +28,7 @@ public class IndexController {
     }
 
     // 별도의 설정이 없다면 Spring Security 가 해당 주소를 낚아챔
+    // SecurityConfig 파일 생성 후 작동 안함
     @GetMapping("/login")
     public @ResponseBody String login(){
         return "login";
