@@ -1,6 +1,6 @@
 -   Spring_Study
 
-# security1
+# security1 & jwt_DEMO
 
 -   스프링부트 시큐리티 & JWT 강의
 -   31 Lectures, 8 Hours 28 Minutes
