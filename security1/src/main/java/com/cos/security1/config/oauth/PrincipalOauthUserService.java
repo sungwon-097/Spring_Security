@@ -1,6 +1,9 @@
 package com.cos.security1.config.oauth;
 
 import com.cos.security1.config.auth.PrincipalDetails;
+import com.cos.security1.config.oauth.provider.FacebookUserInfo;
+import com.cos.security1.config.oauth.provider.GoogleUserInfo;
+import com.cos.security1.config.oauth.provider.OAuth2UserInfo;
 import com.cos.security1.model.User;
 import com.cos.security1.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,10 +35,20 @@ public class PrincipalOauthUserService extends DefaultOAuth2UserService {
         // userRequest => loadUser => 구글로부터 회원 프로필 받아줌
         System.out.println("getAttribute : "+ super.loadUser(userRequest).getAttributes());
 
-        String provider = userRequest.getClientRegistration().getClientId(); // google
-        String providerId = oAuth2User.getAttribute("sub"); // {sub="ID"...}
+        OAuth2UserInfo oAuth2UserInfo = null;
+        if(userRequest.getClientRegistration().getRegistrationId().equals("google")){
+            oAuth2UserInfo = new GoogleUserInfo(oAuth2User.getAttributes());
+        }else if(userRequest.getClientRegistration().getRegistrationId().equals("facebook")){
+            oAuth2UserInfo = new FacebookUserInfo(oAuth2User.getAttributes());
+        }
+        else{
+            System.out.println("Err");
+        }
+
+        String provider = oAuth2UserInfo.getProvider();
+        String providerId = oAuth2UserInfo.getProviderId();
         String username = provider+"_"+providerId; // google_"sub_ID"
-        String email = oAuth2User.getAttribute("email");
+        String email = oAuth2UserInfo.getEmail();
         String password = bCryptPasswordEncoder.encode("getInThere");
         String role = "ROLE_USER";
 
