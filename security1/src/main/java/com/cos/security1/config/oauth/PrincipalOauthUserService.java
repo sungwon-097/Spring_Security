@@ -1,10 +1,7 @@
 package com.cos.security1.config.oauth;
 
 import com.cos.security1.config.auth.PrincipalDetails;
-import com.cos.security1.config.oauth.provider.FacebookUserInfo;
-import com.cos.security1.config.oauth.provider.GoogleUserInfo;
-import com.cos.security1.config.oauth.provider.NaverUserInfo;
-import com.cos.security1.config.oauth.provider.OAuth2UserInfo;
+import com.cos.security1.config.oauth.provider.*;
 import com.cos.security1.model.User;
 import com.cos.security1.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,23 +36,27 @@ public class PrincipalOauthUserService extends DefaultOAuth2UserService {
         System.out.println("getAttribute : "+ super.loadUser(userRequest).getAttributes());
 
         OAuth2UserInfo oAuth2UserInfo = null;
-        if(userRequest.getClientRegistration().getRegistrationId().equals("google")){
+        String provider = userRequest.getClientRegistration().getRegistrationId();
+        if(provider.equals("google")){
             oAuth2UserInfo = new GoogleUserInfo(oAuth2User.getAttributes());
-        }else if(userRequest.getClientRegistration().getRegistrationId().equals("facebook")){
+        }
+        else if(provider.equals("facebook")){
             oAuth2UserInfo = new FacebookUserInfo(oAuth2User.getAttributes());
         }
-        else if(userRequest.getClientRegistration().getRegistrationId().equals("naver")){
+        else if(provider.equals("naver")){
             oAuth2UserInfo = new NaverUserInfo((Map)oAuth2User.getAttributes().get("response"));
+        }
+        else if(provider.equals("kakao")){
+            oAuth2UserInfo = new KakaoUserInfo(oAuth2User.getAttributes());
         }
         else{
             System.out.println("Err");
         }
 
-        String provider = oAuth2UserInfo.getProvider();
         String providerId = oAuth2UserInfo.getProviderId();
         String username = provider+"_"+providerId; // google_"sub_ID"
         String email = oAuth2UserInfo.getEmail();
-        String password = bCryptPasswordEncoder.encode("getInThere");
+        String password = bCryptPasswordEncoder.encode("password");
         String role = "ROLE_USER";
 
         // 회원가입을 강제로 진행
