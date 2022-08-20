@@ -4,11 +4,8 @@ import com.cos.security1.config.auth.PrincipalDetails;
 import com.cos.security1.model.User;
 import com.cos.security1.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.annotation.Secured;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Controller;
@@ -26,6 +23,11 @@ public class IndexController {
 
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
+
+    @GetMapping({"", "./"})
+    public String index(){
+        return "index";
+    }
 
     @GetMapping("/test/login")
     public @ResponseBody String loginTest(Authentication authentication
@@ -46,26 +48,6 @@ public class IndexController {
         System.out.println("authentication : "+oAuth2User.getAttributes());
         System.out.println("oauth2User : "+ oAuth.getAttributes());
         return "OAuth login test";
-    }
-    @GetMapping({"", "./"})
-    public String index(){
-        return "index";
-    }
-
-    @GetMapping("/user")
-    public @ResponseBody String user(@AuthenticationPrincipal PrincipalDetails principalDetails){
-        System.out.println("principlaDetails : "+principalDetails.getUsername());
-        return "user";
-    }
-
-    @GetMapping("/admin")
-    public @ResponseBody String admin(){
-        return "admin";
-    }
-
-    @GetMapping("/manager")
-    public @ResponseBody String manager(){
-        return "manager";
     }
 
     // 별도의 설정이 없다면 Spring Security 가 해당 주소를 낚아챔
@@ -91,12 +73,5 @@ public class IndexController {
 
         userRepository.save(user); // 패스워드 암호화가 되지 않았기 때문에 Security 로 로그인을 할 수 없음
         return "redirect:/loginForm"; // redirect 를 하면 loginForm method 를 호출함
-    }
-
-//    @Secured("ROLE_ADMIN") // 단일 권한
-    @PreAuthorize("hasRole('ROLE_MANAGER') or hasRole('ROLE_ADMIN')") // 두 개 이상의 권한
-    @GetMapping("/info")
-    public @ResponseBody String info(){
-        return "private information";
     }
 }
