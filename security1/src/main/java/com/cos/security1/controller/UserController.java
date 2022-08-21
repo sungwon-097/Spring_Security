@@ -24,23 +24,32 @@ public class UserController {
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
-    @GetMapping({"/", ""})
+    @GetMapping("/")
     public @ResponseBody User user(@AuthenticationPrincipal PrincipalDetails principalDetails){
         String username = principalDetails.getUsername();
         System.out.println(username);
         return userRepository.findByUsername(username);
     }
 
-    @DeleteMapping({"/", ""})
-    public Optional<List<User>> deleteAccount(@AuthenticationPrincipal PrincipalDetails principalDetails){
+    @DeleteMapping("/")
+    public @ResponseBody String deleteAccount(@AuthenticationPrincipal PrincipalDetails principalDetails){
         userRepository.delete(principalDetails.getUserEntity());
         List<User> user = userRepository.findAll();
-        return Optional.of(user);
+        return "delete user";
     }
+
     @PatchMapping("/password")
-    public void updatePassword(@AuthenticationPrincipal PrincipalDetails principalDetails ,String password){
+    public @ResponseBody String updatePassword(
+            @AuthenticationPrincipal PrincipalDetails principalDetails ,String username, String password){
+        String oldPassword = principalDetails.getUserEntity().getPassword();
         String newPassword = bCryptPasswordEncoder.encode(password);
-        principalDetails.getUserEntity().setPassword(newPassword);
-//        return "redirect:/logout";
+        System.out.println("old : "+oldPassword+", new : "+newPassword);
+
+        User userEntity = userRepository.findByUsername(username);
+        System.out.println("userEntity : "+userEntity);
+        userEntity.setPassword(newPassword);
+        userRepository.save(userEntity);
+
+        return "update password";
     }
 }

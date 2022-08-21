@@ -22,7 +22,7 @@ public class AdminUserController {
     @Autowired
     private UserRepository userRepository;
 
-    @GetMapping({"/", ""})
+    @GetMapping("/")
     public @ResponseBody List<User> retrieveAllUsers(){
         return (List<User>) userRepository.findAll();
     }
@@ -65,8 +65,7 @@ public class AdminUserController {
         return Optional.of(user);
     }
     @GetMapping("/role/{role}")
-    public @ResponseBody
-    Optional<List<User>> retrieveRole(@PathVariable String role){
+    public @ResponseBody Optional<List<User>> retrieveRole(@PathVariable String role){
         List<User> user = (List<User>) userRepository.findByRole(role);
 
         if(user == null){
