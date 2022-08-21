@@ -24,7 +24,7 @@ public class IndexController {
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
-    @GetMapping({"", "./"})
+    @GetMapping("/")
     public String index(){
         return "index";
     }
