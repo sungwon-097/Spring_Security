@@ -48,6 +48,8 @@ public class PrincipalDetails implements UserDetails, OAuth2User {
         return collect;
     }
 
+    public User getUserEntity(){return this.user;}
+
     @Override
     public String getPassword() {
         return user.getPassword();
